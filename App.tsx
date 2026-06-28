@@ -1,7 +1,6 @@
-import {StyleSheet} from 'react-native';
 import {SafeAreaProvider, SafeAreaView,} from "react-native-safe-area-context";
 import Header from "./src/components/layout/Header";
-import {Button, configureFonts, PaperProvider, Text} from "react-native-paper";
+import {PaperProvider} from "react-native-paper";
 import {customTheme} from "./src/theme/customTheme";
 import {useFonts} from "expo-font";
 import {useEffect} from "react";
@@ -10,6 +9,10 @@ import * as SplashScreen from "expo-splash-screen";
 SplashScreen.preventAutoHideAsync();
 
 const theme = customTheme;
+
+function onFilterPressHandler() {
+    console.log("Filter pressed");
+}
 
 export default function App() {
 
@@ -28,10 +31,6 @@ export default function App() {
 
     if (!fontsLoaded) {
         return null;
-    }
-
-    function onFilterPressHandler() {
-        console.log("Filter pressed");
     }
 
     return (

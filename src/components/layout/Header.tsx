@@ -2,7 +2,11 @@ import {View, StyleSheet} from "react-native";
 import {IconButton, Text} from 'react-native-paper';
 import {useAppTheme} from "../../theme/customTheme";
 
-function Header({onFilterPress}: { onFilterPress?: () => void }) {
+interface Props {
+    readonly onFilterPress?: () => void;
+}
+
+function Header({onFilterPress}: Props) {
     const {colors} = useAppTheme();
     return (
         <View style={styles.container}>
