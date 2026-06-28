@@ -1,21 +1,46 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import {StyleSheet} from 'react-native';
+import {SafeAreaProvider, SafeAreaView,} from "react-native-safe-area-context";
+import Header from "./src/components/layout/Header";
+import {Button, configureFonts, PaperProvider, Text} from "react-native-paper";
+import {customTheme} from "./src/theme/customTheme";
+import {useFonts} from "expo-font";
+import {useEffect} from "react";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
+
+const theme = customTheme;
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <Text>Here we go again!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+    const [fontsLoaded] = useFonts({
+        'jet-brains-mono-light': require('./assets/fonts/JetBrainsMono-Light.otf'),
+        'jet-brains-mono': require('./assets/fonts/JetBrainsMono-Regular.otf'),
+        'jet-brains-mono-bold': require('./assets/fonts/JetBrainsMono-Bold.otf'),
+        'jet-brains-mono-extra-bold': require('./assets/fonts/JetBrainsMono-ExtraBold.otf'),
+    });
+
+    useEffect(() => {
+        if (fontsLoaded) {
+            SplashScreen.hideAsync();
+        }
+    }, [fontsLoaded]);
+
+    if (!fontsLoaded) {
+        return null;
+    }
+
+    function onFilterPressHandler() {
+        console.log("Filter pressed");
+    }
+
+    return (
+        <SafeAreaProvider>
+            <PaperProvider theme={theme}>
+                <SafeAreaView style={{flex: 1}}>
+                    <Header onFilterPress={onFilterPressHandler}/>
+                </SafeAreaView>
+            </PaperProvider>
+        </SafeAreaProvider>
+    );
+}
