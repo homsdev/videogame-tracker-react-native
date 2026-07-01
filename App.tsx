@@ -1,10 +1,12 @@
-import {SafeAreaProvider, SafeAreaView,} from "react-native-safe-area-context";
-import Header from "./src/components/layout/Header";
-import {PaperProvider} from "react-native-paper";
-import {customTheme} from "./src/theme/customTheme";
-import {useFonts} from "expo-font";
+import {View, StyleSheet} from "react-native";
 import {useEffect} from "react";
+import {useFonts} from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import {PaperProvider} from "react-native-paper";
+import {SafeAreaProvider, SafeAreaView,} from "react-native-safe-area-context";
+import {customTheme} from "./src/theme/customTheme";
+import Header from "./src/components/layout/Header";
+import StatisticMiniCard from "./src/components/common/StatisticMiniCard";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -38,8 +40,22 @@ export default function App() {
             <PaperProvider theme={theme}>
                 <SafeAreaView style={{flex: 1}}>
                     <Header onFilterPress={onFilterPressHandler}/>
+                    <View style={styles.statisticsContainer}>
+                        <StatisticMiniCard quantity={12} label="Games" iconName="controller"/>
+                        <StatisticMiniCard quantity={12} label="Hours" iconName="clock-time-three"/>
+                        <StatisticMiniCard quantity={12} label="Spent" iconName="currency-usd"
+                                           formatValue={(v) => `$${v}`}/>
+                    </View>
                 </SafeAreaView>
             </PaperProvider>
         </SafeAreaProvider>
     );
 }
+
+const styles = StyleSheet.create({
+    statisticsContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-evenly',
+    }
+});
