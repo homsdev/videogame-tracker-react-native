@@ -7,6 +7,7 @@ import {SafeAreaProvider, SafeAreaView,} from "react-native-safe-area-context";
 import {customTheme} from "./src/theme/customTheme";
 import Header from "./src/components/layout/Header";
 import StatisticMiniCard from "./src/components/common/StatisticMiniCard";
+import SearchMotor from "./src/components/layout/SearchMotor";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -45,6 +46,9 @@ export default function App() {
                         <StatisticMiniCard quantity={12} label="Hours" iconName="clock-time-three"/>
                         <StatisticMiniCard quantity={12} label="Spent" iconName="currency-usd"
                                            formatValue={(v) => `$${v}`}/>
+                    </View>
+                    <View>
+                        <SearchMotor showAdvancedSearch={true}/>
                     </View>
                 </SafeAreaView>
             </PaperProvider>
