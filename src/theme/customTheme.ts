@@ -16,7 +16,8 @@ export const customTheme = {
         fontPrimary: '#FFFFFF',
         fontSecondary: '#6B7280',
         fontAccent: '#00E8C6',
-        backgroundLighter: '#131318'
+        backgroundLighter: '#131318',
+        backgroundAccent: '#082829'
     },
 };
 
