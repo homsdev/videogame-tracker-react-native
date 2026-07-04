@@ -1,0 +1,41 @@
+import {View, StyleSheet} from "react-native";
+import {useAppTheme} from "../../theme/customTheme";
+import React, {useMemo} from "react";
+import {Text, Icon} from "react-native-paper";
+
+interface Props {
+    type: string;
+    children: React.ReactNode;
+}
+
+export function StatTag({type, children}: Readonly<Props>) {
+
+    const {colors} = useAppTheme();
+    const styles = useMemo(() => makeStyles(colors), [colors]);
+
+    let icon = null;
+    if (type === 'hours') {
+        icon = <Icon color={colors.fontAccent} size={16} source="clock-outline"/>
+    }
+    if (type === 'cost') {
+        icon = <Icon color={colors.fontAccent} size={16} source="currency-usd"/>
+    }
+    if (type === 'rating') {
+        icon = <Icon color='yellow' size={16} source="star"/>
+    }
+
+    return <View style={styles.container}>
+        {icon}
+        <Text style={{color: colors.fontSecondary}}>{children}</Text>
+    </View>
+}
+
+const makeStyles = (colors: ReturnType<typeof useAppTheme>['colors']) => {
+    return StyleSheet.create({
+        container: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 6,
+        }
+    })
+}
