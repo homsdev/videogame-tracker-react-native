@@ -1,5 +1,5 @@
 import {View, StyleSheet, FlatList} from "react-native";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useFonts} from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import {PaperProvider} from "react-native-paper";
@@ -9,64 +9,24 @@ import Header from "./src/components/layout/Header";
 import StatisticMiniCard from "./src/components/common/StatisticMiniCard";
 import SearchMotor from "./src/components/layout/SearchMotor";
 import {GameCard} from "./src/components/common/GameCard";
+import {Game} from "./src/types/Game";
+
+import {GamesData} from "./src/store/GamesData";
+
 
 SplashScreen.preventAutoHideAsync();
 
 const theme = customTheme;
 
-function onFilterPressHandler() {
-    console.log("Filter pressed");
+
+function handleEditGamePress(id: number) {
+    console.log("Edit game with id: " + id);
 }
 
-const DATA = [
-    {
-        id: 1,
-        "title": "Starfield",
-        "platform": "Play Station",
-        "genre": "RPG",
-        "hours": 12,
-        "cost": 59.99,
-        "rating": 2
-    },
-    {
-        id: 2,
-        "title": "Final Fantasy",
-        "platform": "Play Station",
-        "genre": "RPG",
-        "hours": 12,
-        "cost": 59.99,
-        "rating": 2
-    },
-    {
-        id: 3,
-        "title": "Skyrim",
-        "platform": "Play Station",
-        "genre": "RPG",
-        "hours": 12,
-        "cost": 59.99,
-        "rating": 2
-    },
-    {
-        id: 4,
-        "title": "Doom",
-        "platform": "Play Station",
-        "genre": "RPG",
-        "hours": 12,
-        "cost": 59.99,
-        "rating": 2
-    },
-    {
-        id: 5,
-        "title": "Kingdom Hearts",
-        "platform": "Play Station",
-        "genre": "RPG",
-        "hours": 12,
-        "cost": 59.99,
-        "rating": 2
-    }
-];
-
 export default function App() {
+
+    const [gamesList, setGamesList] = useState<Game[]>(GamesData);
+    const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
     const [fontsLoaded] = useFonts({
         'jet-brains-mono-light': require('./assets/fonts/JetBrainsMono-Light.otf'),
@@ -85,33 +45,49 @@ export default function App() {
         return null;
     }
 
+
+    function handleDeleteGamePress(id: number) {
+        setGamesList(prevGames => prevGames.filter(game => game.id !== id));
+    }
+
+    function onFilterPressHandler() {
+        setShowAdvancedFilters(prev => !prev);
+    }
+
     return (
         <SafeAreaProvider>
             <PaperProvider theme={theme}>
                 <SafeAreaView style={{flex: 1}}>
                     <FlatList
-                        data={DATA}
+                        data={gamesList}
                         keyExtractor={item => item.id.toString()}
                         ListHeaderComponent={
                             <>
                                 <Header onFilterPress={onFilterPressHandler}/>
                                 <View style={styles.statisticsContainer}>
-                                    <StatisticMiniCard quantity={12} label="Games" iconName="controller"/>
-                                    <StatisticMiniCard quantity={12} label="Hours" iconName="clock-time-three"/>
-                                    <StatisticMiniCard quantity={12} label="Spent" iconName="currency-usd"
-                                                       formatValue={(v) => `$${v}`}/>
+                                    <StatisticMiniCard quantity={gamesList.length} label="Games" iconName="controller"/>
+                                    <StatisticMiniCard
+                                        quantity={gamesList.reduce((acc, game) => acc + game.hours, 0)}
+                                        label="Hours" iconName="clock-time-three"/>
+                                    <StatisticMiniCard
+                                        quantity={gamesList.reduce((acc, game) => acc + game.cost, 0)}
+                                        label="Spent" iconName="currency-usd"
+                                        formatValue={(v) => `$${v}`}/>
                                 </View>
-                                <SearchMotor showAdvancedSearch={true}/>
+                                <SearchMotor showAdvancedSearch={showAdvancedFilters}/>
                             </>
                         }
                         renderItem={({item}) => (
                             <GameCard
+                                id={item.id}
                                 title={item.title}
                                 platform={item.platform}
                                 genre={item.genre}
                                 hours={item.hours}
                                 cost={item.cost}
                                 rating={item.rating}
+                                onDeletePress={handleDeleteGamePress}
+                                onEditPress={handleEditGamePress}
                             />
                         )}
                     />

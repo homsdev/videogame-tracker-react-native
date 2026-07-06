@@ -6,15 +6,28 @@ import {StatTag} from "./StatTag";
 
 
 interface Props {
+    id: number;
     title: string;
     platform: string;
     genre: string;
     hours: number;
     cost: number;
-    rating: number;
+    rating?: number;
+    onEditPress: (id: number) => void;
+    onDeletePress: (id: number) => void;
 }
 
-export function GameCard({title, platform, genre, hours, cost, rating}: Readonly<Props>) {
+export function GameCard({
+                             id,
+                             title,
+                             platform,
+                             genre,
+                             hours,
+                             cost,
+                             rating,
+                             onDeletePress,
+                             onEditPress
+                         }: Readonly<Props>) {
 
     const {colors} = useAppTheme();
     const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -33,7 +46,7 @@ export function GameCard({title, platform, genre, hours, cost, rating}: Readonly
                         icon='note-edit-outline'
                         iconColor={colors.fontSecondary}
                         size={24}
-                        onPress={() => console.log("Heart pressed")}
+                        onPress={() => onEditPress(id)}
                         mode='contained'
                     />
                     <IconButton
@@ -42,7 +55,7 @@ export function GameCard({title, platform, genre, hours, cost, rating}: Readonly
                         icon='delete'
                         iconColor={colors.error}
                         size={24}
-                        onPress={() => console.log("Heart pressed")}
+                        onPress={() => onDeletePress(id)}
                         mode='contained'
                     />
                 </View>
@@ -51,7 +64,7 @@ export function GameCard({title, platform, genre, hours, cost, rating}: Readonly
                 <View style={styles.statsContainer}>
                     <StatTag type='hours'>{hours} h</StatTag>
                     <StatTag type='cost'>{cost}</StatTag>
-                    <StatTag type='rating'>{rating}</StatTag>
+                    {rating && <StatTag type='rating'>{rating}</StatTag>}
                 </View>
             </View>
         </View>
