@@ -1,7 +1,6 @@
 import {View, StyleSheet} from "react-native";
-import {Button, Modal, Portal, RadioButton, Text, TextInput} from "react-native-paper";
-import {useMemo, useState} from "react";
-import {Dropdown} from "react-native-element-dropdown";
+import {Button, Modal, Portal, TextInput} from "react-native-paper";
+import {useMemo} from "react";
 import {GAME_GENRE_OPTIONS, GAME_PLATFORM_OPTIONS} from "../../store/GamesData";
 import {useAppTheme} from "../../theme/customTheme";
 import DropdownSelector from "../UI/DropdownSelector";
@@ -20,7 +19,6 @@ interface Inputs {
     genre: string;
     hours: number;
     cost: number;
-    rating?: number;
 }
 
 
@@ -39,7 +37,6 @@ function CreateGameForm({visible, onDismiss}: Readonly<Props>) {
             genre: '',
             hours: 0,
             cost: 0,
-            rating: undefined,
         }
     });
 
