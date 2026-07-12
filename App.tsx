@@ -2,7 +2,7 @@ import {View, StyleSheet, FlatList} from "react-native";
 import {useEffect, useState} from "react";
 import {useFonts} from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import {PaperProvider} from "react-native-paper";
+import {FAB, PaperProvider} from "react-native-paper";
 import {SafeAreaProvider, SafeAreaView,} from "react-native-safe-area-context";
 import {customTheme} from "./src/theme/customTheme";
 import Header from "./src/components/layout/Header";
@@ -12,6 +12,7 @@ import {GameCard} from "./src/components/common/GameCard";
 import {Game} from "./src/types/Game";
 
 import {GamesData} from "./src/store/GamesData";
+import CreateGameForm from "./src/components/common/CreateGameForm";
 
 
 SplashScreen.preventAutoHideAsync();
@@ -25,6 +26,7 @@ function handleEditGamePress(id: number) {
 
 export default function App() {
 
+    const [visibleModal, setVisibleModal] = useState(false);
     const [gamesList, setGamesList] = useState<Game[]>(GamesData);
     const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
@@ -54,10 +56,19 @@ export default function App() {
         setShowAdvancedFilters(prev => !prev);
     }
 
+    function showModal() {
+        setVisibleModal(true);
+    }
+
+    function hideModal() {
+        setVisibleModal(false);
+    }
+
     return (
         <SafeAreaProvider>
             <PaperProvider theme={theme}>
                 <SafeAreaView style={{flex: 1}}>
+                    <CreateGameForm visible={visibleModal} onDismiss={hideModal}/>
                     <FlatList
                         data={gamesList}
                         keyExtractor={item => item.id.toString()}
@@ -91,6 +102,7 @@ export default function App() {
                             />
                         )}
                     />
+                    <FAB icon="plus" style={styles.addGameButton} onPress={showModal}/>
                 </SafeAreaView>
             </PaperProvider>
         </SafeAreaProvider>
@@ -102,5 +114,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-evenly',
+    },
+    addGameButton: {
+        position: 'absolute',
+        bottom: 88,
+        right: 0,
+        margin: 20
     }
 });
