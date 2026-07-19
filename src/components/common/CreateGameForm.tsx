@@ -1,16 +1,19 @@
 import {View, StyleSheet} from "react-native";
 import {Button, Modal, Portal, TextInput} from "react-native-paper";
-import {useMemo} from "react";
+import {useEffect, useMemo} from "react";
 import {GAME_GENRE_OPTIONS, GAME_PLATFORM_OPTIONS} from "../../store/GamesData";
 import {useAppTheme} from "../../theme/customTheme";
 import DropdownSelector from "../UI/DropdownSelector";
 import LabelText from "../UI/LabelText";
 import {Controller, useForm} from "react-hook-form";
+import {Game} from "../../types/Game";
 
 
 interface Props {
     visible: boolean;
-    onDismiss?: () => void;
+    onDismiss: () => void;
+    onSubmit: (game: Game) => void;
+    preFilled?: Game;
 }
 
 interface Inputs {
@@ -22,8 +25,9 @@ interface Inputs {
 }
 
 
-function CreateGameForm({visible, onDismiss}: Readonly<Props>) {
+function CreateGameForm({visible, onDismiss, onSubmit, preFilled}: Readonly<Props>) {
 
+    console.log("CreateGameForm: ", visible, preFilled);
 
     const {
         control,
@@ -44,12 +48,45 @@ function CreateGameForm({visible, onDismiss}: Readonly<Props>) {
 
     const styles = useMemo(() => makeStyles(colors), [colors]);
 
-    const onSubmit = (data: Inputs) => {
-        console.log('Form Data:', data);
-        console.log('Form Errors:', errors);
-        console.log('Form isValid:', isValid);
+    useEffect(() => {
+        if (visible) {
+            console.log("useEffect visible detection with prefilled: ", preFilled);
+            if (preFilled) {
+                console.log("Modal in editing Mode");
+                reset({
+                    title: preFilled.title,
+                    platform: preFilled.platform,
+                    genre: preFilled.genre,
+                    hours: preFilled.hours,
+                    cost: preFilled.cost,
+                });
+            } else {
+                console.log("Modal in creation Mode");
+                reset({
+                    title: '',
+                    platform: '',
+                    genre: '',
+                    hours: 0,
+                    cost: 0,
+                });
+            }
+        }
+    }, [visible, preFilled, reset]);
+
+    function submitHandler(data: Inputs) {
+        console.log('CreateForm: ', data);
+        const newGame: Game = {
+            id: preFilled?.id ?? Date.now(),
+            title: data.title,
+            platform: data.platform,
+            genre: data.genre,
+            hours: data.hours,
+            cost: data.cost,
+            rating: 0,
+        }
         reset();
-    };
+        onSubmit(newGame);
+    }
 
     return <View>
         <Portal>
@@ -92,7 +129,7 @@ function CreateGameForm({visible, onDismiss}: Readonly<Props>) {
                                         labelField='label'
                                         valueField='value'
                                         placeholder=''
-                                        onChange={onChange}
+                                        onChange={({value}) => onChange(value)}
                                         value={value}
                                     />
                                 </View>
@@ -111,7 +148,7 @@ function CreateGameForm({visible, onDismiss}: Readonly<Props>) {
                                         labelField='label'
                                         valueField='value'
                                         placeholder=''
-                                        onChange={onChange}
+                                        onChange={({value}) => onChange(value)}
                                         value={value}
                                     />
                                 </View>
@@ -162,7 +199,9 @@ function CreateGameForm({visible, onDismiss}: Readonly<Props>) {
                     </View>
                     {/*Submit*/}
                     <View style={{marginTop: 20}}>
-                        <Button disabled={!isValid} mode="contained" onPress={handleSubmit(onSubmit)}>ADD GAME</Button>
+                        <Button disabled={!isValid} mode="contained" onPress={handleSubmit(submitHandler)}>
+                            ADD GAME
+                        </Button>
                     </View>
                 </View>
             </Modal>

@@ -5,7 +5,7 @@ import {Text, Icon} from "react-native-paper";
 
 interface Props {
     type: string;
-    children: React.ReactNode;
+    children: string | number;
 }
 
 export function StatTag({type, children}: Readonly<Props>) {

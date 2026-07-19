@@ -1,6 +1,6 @@
 import {Dropdown} from "react-native-element-dropdown";
 import {useAppTheme} from "../../theme/customTheme";
-import {StyleSheet} from "react-native";
+import {StyleSheet,Text} from "react-native";
 import {useMemo} from "react";
 
 interface Props {
@@ -20,7 +20,8 @@ function DropdownSelector({data, valueField, labelField, placeholder, onChange, 
     return <Dropdown
         style={styles.dropdown}
         placeholderStyle={styles.dropdownText}
-        selectedTextStyle={[styles.dropdownText]}
+        selectedTextStyle={styles.dropdownText}
+        containerStyle={styles.itemsContainer}
         itemContainerStyle={styles.itemContainer}
         itemTextStyle={styles.dropdownText}
         activeColor={colors.fontAccent}
@@ -30,6 +31,9 @@ function DropdownSelector({data, valueField, labelField, placeholder, onChange, 
         placeholder={placeholder}
         onChange={(item) => onChange(item)}
         value={value}
+        renderItem={(item) => (
+            <Text style={styles.dropdownText}>{item[labelField]}</Text>
+        )}
     />
 }
 
@@ -45,8 +49,16 @@ const makeStyles = (colors: ReturnType<typeof useAppTheme>['colors']) => StyleSh
         color: colors.fontPrimary,
         fontFamily: 'jet-brains-mono-bold',
     },
+    itemsContainer:{
+        backgroundColor: colors.backgroundLighter,
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderColor: colors.backgroundLighter,
+        borderRadius: 8
+    },
     itemContainer: {
         backgroundColor: colors.backgroundLighter,
+        marginVertical: 4,
     }
 });
 
