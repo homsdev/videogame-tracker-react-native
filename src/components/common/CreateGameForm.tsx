@@ -12,7 +12,7 @@ import {Game} from "../../types/Game";
 interface Props {
     visible: boolean;
     onDismiss: () => void;
-    onSubmit: (game: Game) => void;
+    onSubmit: (_game: Game) => void;
     preFilled?: Game;
 }
 
@@ -27,12 +27,10 @@ interface Inputs {
 
 function CreateGameForm({visible, onDismiss, onSubmit, preFilled}: Readonly<Props>) {
 
-    console.log("CreateGameForm: ", visible, preFilled);
-
     const {
         control,
         handleSubmit,
-        formState: {isValid, errors},
+        formState: {isValid},
         reset,
     } = useForm<Inputs>({
         defaultValues: {
@@ -50,9 +48,7 @@ function CreateGameForm({visible, onDismiss, onSubmit, preFilled}: Readonly<Prop
 
     useEffect(() => {
         if (visible) {
-            console.log("useEffect visible detection with prefilled: ", preFilled);
             if (preFilled) {
-                console.log("Modal in editing Mode");
                 reset({
                     title: preFilled.title,
                     platform: preFilled.platform,
@@ -61,7 +57,6 @@ function CreateGameForm({visible, onDismiss, onSubmit, preFilled}: Readonly<Prop
                     cost: preFilled.cost,
                 });
             } else {
-                console.log("Modal in creation Mode");
                 reset({
                     title: '',
                     platform: '',
@@ -74,9 +69,8 @@ function CreateGameForm({visible, onDismiss, onSubmit, preFilled}: Readonly<Prop
     }, [visible, preFilled, reset]);
 
     function submitHandler(data: Inputs) {
-        console.log('CreateForm: ', data);
         const newGame: Game = {
-            id: preFilled?.id ?? Date.now(),
+            id: preFilled?.id ?? 0,
             title: data.title,
             platform: data.platform,
             genre: data.genre,

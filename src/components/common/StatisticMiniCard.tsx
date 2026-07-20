@@ -1,12 +1,12 @@
 import {StyleSheet, Text} from "react-native";
-import {Avatar, Card, Icon} from "react-native-paper";
+import {Avatar, Card} from "react-native-paper";
 import {useAppTheme} from "../../theme/customTheme";
 
 interface Props {
     quantity: number;
     label: string;
     iconName: string;
-    formatValue?: (value: number) => string;
+    formatValue?: (_value: number) => string;
 }
 
 

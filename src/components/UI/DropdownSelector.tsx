@@ -9,7 +9,7 @@ interface Props {
     labelField: string;
     valueField: string;
     placeholder: string;
-    onChange: (item: any) => void;
+    onChange: (_item: any) => void;
 }
 
 function DropdownSelector({data, valueField, labelField, placeholder, onChange, value}: Readonly<Props>) {

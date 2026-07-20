@@ -13,8 +13,8 @@ interface Props {
     hours: number;
     cost: number;
     rating?: number;
-    onEditPress: (id: number) => void;
-    onDeletePress: (id: number) => void;
+    onEditPress: (_id: number) => void;
+    onDeletePress: (_id: number) => void;
 }
 
 export function GameCard({
@@ -64,7 +64,7 @@ export function GameCard({
                 <View style={styles.statsContainer}>
                     <StatTag type='hours'>{`${hours} h`}</StatTag>
                     <StatTag type='cost'>{`${cost}`}</StatTag>
-                    {rating != null && <StatTag type='rating'>{`${rating}`}</StatTag>}
+                    {rating !== null && <StatTag type='rating'>{`${rating}`}</StatTag>}
                 </View>
             </View>
         </View>
