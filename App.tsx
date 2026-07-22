@@ -2,7 +2,7 @@ import {View, StyleSheet, FlatList} from "react-native";
 import {useEffect, useState} from "react";
 import {useFonts} from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import {PaperProvider} from "react-native-paper";
+import {FAB as Fab, PaperProvider} from "react-native-paper";
 import {SafeAreaProvider, SafeAreaView,} from "react-native-safe-area-context";
 import {customTheme} from "./src/theme/customTheme";
 import Header from "./src/components/layout/Header";
@@ -12,21 +12,19 @@ import {GameCard} from "./src/components/common/GameCard";
 import {Game} from "./src/types/Game";
 
 import {GamesData} from "./src/store/GamesData";
+import CreateGameForm from "./src/components/common/CreateGameForm";
 
 
 SplashScreen.preventAutoHideAsync();
 
 const theme = customTheme;
 
-
-function handleEditGamePress(id: number) {
-    console.log("Edit game with id: " + id);
-}
-
 export default function App() {
 
+    const [visibleModal, setVisibleModal] = useState(false);
     const [gamesList, setGamesList] = useState<Game[]>(GamesData);
     const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+    const [currentEditingGame, setCurrentEditingGame] = useState<Game>()
 
     const [fontsLoaded] = useFonts({
         'jet-brains-mono-light': require('./assets/fonts/JetBrainsMono-Light.otf'),
@@ -45,19 +43,64 @@ export default function App() {
         return null;
     }
 
+    function onFilterPressHandler() {
+        setShowAdvancedFilters(prev => !prev);
+    }
+
+    function showModal() {
+        setVisibleModal(true);
+    }
+
+    function hideModal() {
+        setVisibleModal(false);
+    }
+
+    function handleEditGamePress(id: number) {
+        setCurrentEditingGame(gamesList.find(game => game.id === id));
+        setVisibleModal(true);
+    }
 
     function handleDeleteGamePress(id: number) {
         setGamesList(prevGames => prevGames.filter(game => game.id !== id));
     }
 
-    function onFilterPressHandler() {
-        setShowAdvancedFilters(prev => !prev);
+    function handleOnAddGamePress() {
+        setCurrentEditingGame(undefined);  // Clear any previous editing game
+        setVisibleModal(true);
+    }
+
+    function submitCreateGameFormHandler(data: Game) {
+        console.log('App Data:', data);
+        if (gamesList.some((game: Game) => game.id === data.id)) {
+            let updatedList = gamesList.map(game => {
+                if (game.id === data.id) {
+                    game.title = data.title;
+                    game.platform = data.platform;
+                    game.genre = data.genre;
+                    game.hours = data.hours;
+                    game.cost = data.cost;
+                    game.rating = data.rating;
+                }
+                return game;
+            })
+            setGamesList(updatedList);
+        } else {
+            setGamesList(prevGames => [...prevGames, {...data, id: prevGames.length + 1}]);
+        }
+        setVisibleModal(false);
+    }
+
+    function onDismissHandler() {
+        setVisibleModal(false);
+        setCurrentEditingGame(undefined);
     }
 
     return (
         <SafeAreaProvider>
             <PaperProvider theme={theme}>
                 <SafeAreaView style={{flex: 1}}>
+                    <CreateGameForm visible={visibleModal} onDismiss={onDismissHandler}
+                                    onSubmit={submitCreateGameFormHandler} preFilled={currentEditingGame}/>
                     <FlatList
                         data={gamesList}
                         keyExtractor={item => item.id.toString()}
@@ -91,6 +134,7 @@ export default function App() {
                             />
                         )}
                     />
+                    <Fab icon="plus" style={styles.addGameButton} onPress={handleOnAddGamePress}/>
                 </SafeAreaView>
             </PaperProvider>
         </SafeAreaProvider>
@@ -102,5 +146,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-evenly',
+    },
+    addGameButton: {
+        position: 'absolute',
+        bottom: 88,
+        right: 0,
+        margin: 20
     }
 });

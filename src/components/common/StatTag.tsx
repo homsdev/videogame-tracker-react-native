@@ -1,17 +1,15 @@
 import {View, StyleSheet} from "react-native";
 import {useAppTheme} from "../../theme/customTheme";
-import React, {useMemo} from "react";
 import {Text, Icon} from "react-native-paper";
 
 interface Props {
     type: string;
-    children: React.ReactNode;
+    children: string | number;
 }
 
 export function StatTag({type, children}: Readonly<Props>) {
 
     const {colors} = useAppTheme();
-    const styles = useMemo(() => makeStyles(colors), [colors]);
 
     let icon = null;
     if (type === 'hours') {
@@ -30,12 +28,10 @@ export function StatTag({type, children}: Readonly<Props>) {
     </View>
 }
 
-const makeStyles = (colors: ReturnType<typeof useAppTheme>['colors']) => {
-    return StyleSheet.create({
-        container: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 6,
-        }
-    })
-}
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+    }
+});
